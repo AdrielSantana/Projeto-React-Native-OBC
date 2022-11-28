@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "projeto-react-native-obc",
+    "slug": "projeto-react-native-obc",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
