@@ -6,8 +6,10 @@ import { useNavigation } from "@react-navigation/native";
 import LifeStatus from "../../Components/LifeStatus";
 
 const Start = () => {
+  const navigation = useNavigation()
+
   const handleNavAppExplanation = () => {
-    console.log("teste navAppExplanation");
+    navigation.navigate("AppExplanation")
   };
 
   return (
