@@ -7,21 +7,21 @@ const LifeStatus = () => {
   return (
     <View style={styles.container}>
       <Lottie
-        source={require("../../../assets/education/education-100.json")}
+        source={require("../../assets/education/education-100.json")}
         autoPlay
         loop
         style={styles.educationAnimation}
       />
 
       <Lottie
-        source={require("../../../assets/money/money-100.json")}
+        source={require("../../assets/money/money-100.json")}
         autoPlay
         loop
         style={styles.moneyAnimation}
       />
 
       <Lottie
-        source={require("../../../assets/robot/robot-100-100.json")}
+        source={require("../../assets/robot/robot-100-100.json")}
         autoPlay
         loop
         style={styles.robotAnimation}

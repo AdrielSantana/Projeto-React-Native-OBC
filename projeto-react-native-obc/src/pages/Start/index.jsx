@@ -3,7 +3,7 @@ import { View, ScrollView, Text, Image, StyleSheet } from "react-native";
 import DefaultButton from "../../Components/Common/DefaultButton";
 import { useNavigation } from "@react-navigation/native";
 
-import LifeStatus from "../../Components/Common/LifeStatus";
+import LifeStatus from "../../Components/LifeStatus";
 
 const Start = () => {
   const handleNavAppExplanation = () => {
