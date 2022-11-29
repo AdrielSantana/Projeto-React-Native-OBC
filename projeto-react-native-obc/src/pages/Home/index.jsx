@@ -1,7 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, ScrollView, StyleSheet, Text } from "react-native";
-import LifeStatus from "../../Components/LifeStatus";
+
+import LifeStatus from "../../Components/Common/LifeStatus";
+import StatusBar from "../../Components/Home/StatusBar";
 
 const Home = () => {
   const navigation = useNavigation();
@@ -16,7 +18,9 @@ const Home = () => {
         <View style={{ alignItems: "center" }}>
           <Text style={styles.dailyChecks}>❤️ 20 dias - ✅ 80 checks</Text>
           <LifeStatus />
+          <StatusBar />
         </View>
+
         <Text
           style={styles.explanationText}
           onPress={() => {
