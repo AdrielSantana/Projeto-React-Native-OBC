@@ -1,15 +1,32 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import { View, ScrollView, StyleSheet, Text } from "react-native";
 import DefaultButton from "../../Components/Common/DefaultButton";
 import ExplanationCard from "../../Components/Explanation/ExplanationCard";
+import ChangeNavigationService from "../../Service/ChangeNavigationService";
 
 const AppExplanation = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+  const [showHome, setShowHome] = useState(false);
+  const startDate = new Date();
+  const appStartData = `${startDate.getDate()}/${startDate.getMonth()}/${startDate.getFullYear()}`;
 
   const handleNavHome = () => {
-    navigation.navigate('Home')
+    navigation.navigate("Home");
   };
+
+  function handleSetShowHome() {
+    if (!showHome) {
+      ChangeNavigationService.setShowHome({ showHome: true, appStartData })
+        .then(() => console.log(`Sucesso! ${showHome} ${appStartData}`))
+        .catch((err) => console.log(err));
+      setShowHome(true);
+
+      handleNavHome();
+    }
+
+    handleNavHome();
+  }
 
   return (
     <View style={styles.container}>
@@ -18,7 +35,7 @@ const AppExplanation = () => {
           <Text style={styles.title}>
             Antes, deixa {"\n"} eu te explicar...
           </Text>
-          <ExplanationCard/>
+          <ExplanationCard />
           <Text style={styles.descriptonCta}>
             Pronto(a) para subir de nível na vida?
           </Text>
@@ -28,7 +45,7 @@ const AppExplanation = () => {
           </Text>
           <DefaultButton
             buttonText={"Continuar"}
-            handlePress={handleNavHome}
+            handlePress={handleSetShowHome}
             width={250}
             height={50}
           />
@@ -44,7 +61,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#212121",
   },
   title: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
