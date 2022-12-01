@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, ScrollView, StyleSheet, Text } from "react-native";
 import DefaultButton from "../../Components/Common/DefaultButton";
 import ExplanationCard from "../../Components/Explanation/ExplanationCard";
@@ -15,12 +15,18 @@ const AppExplanation = () => {
     navigation.navigate("Home");
   };
 
+  useEffect(() => {
+    ChangeNavigationService.checkShowHome(1)
+      .then((showHome) => setShowHome(showHome.showHome))
+      .catch((err) => console.log(err));
+  }, []);
+
   function handleSetShowHome() {
     if (!showHome) {
+      setShowHome(true);
       ChangeNavigationService.setShowHome({ showHome: true, appStartData })
         .then(() => console.log(`Sucesso! ${showHome} ${appStartData}`))
         .catch((err) => console.log(err));
-      setShowHome(true);
 
       handleNavHome();
     }

@@ -5,7 +5,7 @@ db.transaction((tx) => {
     "CREATE TABLE IF NOT EXISTS change_navigation (id INTEGER PRIMARY KEY AUTOINCREMENT, showHome BOOLEAN, appStartData TEXT);",
     [],
     (_, error) => {
-      console.log(error);
+      console.log("Transaction ChangeNavigationService Error: "+ JSON.stringify(error));
     }
   );
 });

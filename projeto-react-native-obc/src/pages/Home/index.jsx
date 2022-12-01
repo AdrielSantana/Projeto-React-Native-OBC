@@ -8,6 +8,7 @@ import EditHabit from "../../Components/Home/EditHabit";
 import StatusBar from "../../Components/Home/StatusBar";
 
 import ChangeNavigationService from "../../Service/ChangeNavigationService";
+import HabitService from "../../Service/HabitService";
 
 const Home = ({ route }) => {
   const [mindHabit, setMindHabit] = useState();
@@ -19,12 +20,24 @@ const Home = ({ route }) => {
   const today = new Date();
 
   useEffect(() => {
+    HabitService.findByArea("Mente").then((mind) => {
+      setMindHabit(mind[0]);
+    });
+    HabitService.findByArea("Financeiro").then((money) => {
+      setMoneyHabit(money[0]);
+    });
+    HabitService.findByArea("Corpo").then((body) => {
+      setBodyHabit(body[0]);
+    });
+    HabitService.findByArea("Humor").then((fun) => {
+      setFunHabit(fun[0]);
+    });
+
     ChangeNavigationService.checkShowHome(1)
       .then((showHome) => {
         const formDate = `${today.getDate()}/${today.getMonth()}/${today.getFullYear()}`;
         const checkDays =
           new Date(formDate) - new Date(showHome.appStartData) + 1;
-          console.log(checkDays)
 
         setRobotDaysLife(checkDays.toString().padStart(2, "0"));
       })
@@ -50,47 +63,24 @@ const Home = ({ route }) => {
           <StatusBar />
 
           {mindHabit ? (
-            <EditHabit
-              habit={mindHabit?.habitName}
-              frequency={`${mindHabit?.habitTime} - ${mindHabit?.habitFrequency}`}
-              habitArea={mindHabit?.habitArea}
-              checkColor={"#90B7F3"}
-            />
+            <EditHabit habit={mindHabit} checkColor="#90B7F3" />
           ) : (
-            <CreateHabit habitArea={"Mente"} borderColor={"#90B7F3"} />
+            <CreateHabit habitArea="Mente" borderColor="#90B7F3" />
           )}
-
           {moneyHabit ? (
-            <EditHabit
-              habit={moneyHabit?.habitName}
-              frequency={`${moneyHabit?.habitTime} - ${moneyHabit?.habitFrequency}`}
-              habitArea={moneyHabit?.habitArea}
-              checkColor={"#85BB65"}
-            />
+            <EditHabit habit={moneyHabit} checkColor="#85BB65" />
           ) : (
-            <CreateHabit habitArea={"Financeiro"} borderColor={"#85BB65"} />
+            <CreateHabit habitArea="Financeiro" borderColor="#85BB65" />
           )}
-
           {bodyHabit ? (
-            <EditHabit
-              habit={bodyHabit?.habitName}
-              frequency={`${bodyHabit?.habitTime} - ${bodyHabit?.habitFrequency}`}
-              habitArea={bodyHabit?.habitArea}
-              checkColor={"#FF0044"}
-            />
+            <EditHabit habit={bodyHabit} checkColor="#FF0044" />
           ) : (
-            <CreateHabit habitArea={"Corpo"} borderColor={"#FF0044"} />
+            <CreateHabit habitArea="Corpo" borderColor="#FF0044" />
           )}
-
           {funHabit ? (
-            <EditHabit
-              habit={funHabit?.habitName}
-              frequency={`${funHabit?.habitTime} - ${funHabit?.habitFrequency}`}
-              habitArea={funHabit?.habitArea}
-              checkColor={"#FE7F23"}
-            />
+            <EditHabit habit={funHabit} checkColor="#FE7F23" />
           ) : (
-            <CreateHabit habitArea={"Humor"} borderColor={"#FE7F23"} />
+            <CreateHabit habitArea="Humor" borderColor="#FE7F23" />
           )}
         </View>
 
