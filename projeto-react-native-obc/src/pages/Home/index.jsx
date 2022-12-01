@@ -19,6 +19,8 @@ const Home = ({ route }) => {
   const [robotDaysLife, setRobotDaysLife] = useState();
   const today = new Date();
 
+  const excludeArea = route.params?.excludeArea;
+
   useEffect(() => {
     HabitService.findByArea("Mente").then((mind) => {
       setMindHabit(mind[0]);
@@ -32,6 +34,21 @@ const Home = ({ route }) => {
     HabitService.findByArea("Humor").then((fun) => {
       setFunHabit(fun[0]);
     });
+
+    if (excludeArea) {
+      if (excludeArea == "Mente") {
+        setMindHabit(null);
+      }
+      if (excludeArea == "Financeiro") {
+        setMoneyHabit(null);
+      }
+      if (excludeArea == "Corpo") {
+        setBodyHabit(null);
+      }
+      if (excludeArea == "Humor") {
+        setFunHabit(null);
+      }
+    }
 
     ChangeNavigationService.checkShowHome(1)
       .then((showHome) => {
