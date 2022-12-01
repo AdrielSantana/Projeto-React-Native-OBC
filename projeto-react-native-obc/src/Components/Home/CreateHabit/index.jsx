@@ -1,10 +1,16 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const CreateHabit = ({ habitArea, borderColor }) => {
-  const handleCreate = () => {
-    console.log(`criando habito do ${habitArea}`);
-  };
+export default function CreateHabit({ habitArea, borderColor }) {
+  const navigation = useNavigation();
+
+  function handleCreate() {
+    navigation.navigate("HabitPage", {
+      create: true,
+      habit: { habitArea: habitArea },
+    });
+  }
 
   return (
     <TouchableOpacity
@@ -17,7 +23,7 @@ const CreateHabit = ({ habitArea, borderColor }) => {
       </Text>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   button: {
@@ -26,17 +32,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderWidth: 2,
-    borderStyle: 'dotted',
-    borderColor: "#FFF",
-    borderRadius: 5,
+    borderColor: "white",
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
   },
   habitTitle: {
-    color: "#FFF",
+    color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
 });
-
-export default CreateHabit;
