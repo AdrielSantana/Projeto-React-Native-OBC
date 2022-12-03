@@ -22,3 +22,5 @@ Aprendi sobre rotas condicionais, estilização, componentes e mais um monte de 
 >
 > É possível criar notificações personalizadas para cada hábito, sendo ele diário, semanal ou mensal. A cada dia que o hábito passou de ser feito o robô perde ponto naquela área e a sua animação muda correspondendo à isso. Caso chegue a zerar ( 3 dias sem realizar o hábito na data prevista ), o robô quebra e o jogo é reiniciado ***Game Over***.
 >
+
+Para testar, só baixar o APK e instalar no dispositivo com suporte Android 8+
