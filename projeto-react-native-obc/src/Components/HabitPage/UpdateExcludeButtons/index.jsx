@@ -23,7 +23,6 @@ export default function UpdateExcludeButtons({
   function handleDeleteHabit() {
     HabitService.deleteByName(habitArea)
       .then(() => {
-        Alert.alert("Exclusão feita com sucesso");
         NotificationService.deleteNotification(habitInput);
         navigation.navigate("Home", {
           excludeArea: `${habitArea}`,
@@ -66,7 +65,6 @@ export default function UpdateExcludeButtons({
               {
                 text: "Cancelar",
                 onPress: () => {
-                  Alert.alert("Exclusão cancelada com sucesso!");
                 },
               },
               {

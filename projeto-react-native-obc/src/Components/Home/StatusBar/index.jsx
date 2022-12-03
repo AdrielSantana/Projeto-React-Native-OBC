@@ -3,7 +3,7 @@ import { StyleSheet, View, Image } from "react-native";
 
 import { ProgressBar } from "react-native-paper";
 
-const StatusBar = () => {
+const StatusBar = ({ mindHabit, moneyHabit, bodyHabit, funHabit }) => {
   return (
     <View style={styles.container}>
       <View style={styles.statusBarContainer}>
@@ -12,7 +12,11 @@ const StatusBar = () => {
           source={require("../../../assets/icons/educationIcon.png")}
         />
 
-        <ProgressBar progress={1} color="#90B7F3" style={styles.progress} />
+        <ProgressBar
+          progress={mindHabit}
+          color="#90B7F3"
+          style={styles.progress}
+        />
       </View>
 
       <View style={styles.statusBarContainer}>
@@ -21,7 +25,11 @@ const StatusBar = () => {
           source={require("../../../assets/icons/moneyIcon.png")}
         />
 
-        <ProgressBar progress={0} color="#85BB65" style={styles.progress} />
+        <ProgressBar
+          progress={moneyHabit}
+          color="#85BB65"
+          style={styles.progress}
+        />
       </View>
 
       <View style={styles.statusBarContainer}>
@@ -30,7 +38,11 @@ const StatusBar = () => {
           source={require("../../../assets/icons/bodyIcon.png")}
         />
 
-        <ProgressBar progress={1} color="#FF0044" style={styles.progress} />
+        <ProgressBar
+          progress={bodyHabit}
+          color="#FF0044"
+          style={styles.progress}
+        />
       </View>
 
       <View style={styles.statusBarContainer}>
@@ -39,7 +51,11 @@ const StatusBar = () => {
           source={require("../../../assets/icons/funIcon.png")}
         />
 
-        <ProgressBar progress={1} color="#FE7F23" style={styles.progress} />
+        <ProgressBar
+          progress={funHabit}
+          color="#FE7F23"
+          style={styles.progress}
+        />
       </View>
     </View>
   );

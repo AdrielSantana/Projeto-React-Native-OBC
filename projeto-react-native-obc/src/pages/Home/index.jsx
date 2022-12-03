@@ -9,6 +9,7 @@ import StatusBar from "../../Components/Home/StatusBar";
 
 import ChangeNavigationService from "../../Service/ChangeNavigationService";
 import HabitService from "../../Service/HabitService";
+import CheckService from "../../Service/CheckService";
 
 const Home = ({ route }) => {
   const [mindHabit, setMindHabit] = useState();
@@ -61,6 +62,10 @@ const Home = ({ route }) => {
       .catch((err) => console.log(err));
   }, [route.params]);
 
+  useEffect(() => {
+    CheckService.removeCheck(mindHabit, moneyHabit, bodyHabit, funHabit);
+  }, [mindHabit, moneyHabit, bodyHabit, funHabit]);
+
   const navigation = useNavigation();
 
   const handleNavAppExplanation = () => {
@@ -77,7 +82,12 @@ const Home = ({ route }) => {
           </Text>
 
           <LifeStatus />
-          <StatusBar />
+          <StatusBar
+            mindHabit={mindHabit?.progressBar}
+            moneyHabit={moneyHabit?.progressBar}
+            bodyHabit={bodyHabit?.progressBar}
+            funHabit={funHabit?.progressBar}
+          />
 
           {mindHabit ? (
             <EditHabit habit={mindHabit} checkColor="#90B7F3" />

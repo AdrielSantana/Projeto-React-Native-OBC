@@ -92,8 +92,6 @@ export default function HabitPage({ route }) {
         progressBar: 1,
       })
         .then(() => {
-          Alert.alert("Sucesso na criação do hábito!");
-
           navigation.navigate("Home", {
             createdHabit: `Created in ${habit?.habitArea}`,
           });
@@ -115,7 +113,6 @@ export default function HabitPage({ route }) {
         habitNotificationTime: timeNotification,
         habitNotificationId: notificationToggle ? habitInput : null,
       }).then(() => {
-        Alert.alert("Sucesso na atualização do hábito");
         if (!notificationToggle) {
           NotificationService.deleteNotification(habit?.habitName);
         } else {
