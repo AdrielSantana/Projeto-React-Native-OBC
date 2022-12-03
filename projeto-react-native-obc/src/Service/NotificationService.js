@@ -55,9 +55,9 @@ async function createNotification(
 }
 
 async function deleteNotification(habitInput) {
-  await Notifications.cancelScheduledNotificationAsync(habitInput).then(() => {
-    console.log("Exclusão feita!");
-  });
+  await Notifications.cancelScheduledNotificationAsync(habitInput).then(
+    () => {}
+  );
 }
 
 export default {

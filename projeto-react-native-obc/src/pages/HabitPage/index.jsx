@@ -8,7 +8,7 @@ import TimeDatePicker from "../../Components/HabitPage/TimeDatePicker";
 import UpdateExcludeButtons from "../../Components/HabitPage/UpdateExcludeButtons";
 import DefaultButton from "../../Components/Common/DefaultButton";
 
-import HabitService from "../../Service/HabitService";
+import HabitsService from "../../Service/HabitsService";
 import NotificationService from "../../Service/NotificationService";
 import * as Notifications from "expo-notifications";
 
@@ -41,9 +41,11 @@ export default function HabitPage({ route }) {
   const { create, habit } = route.params;
 
   const habitCreated = new Date();
-  const formatDate = `${habitCreated.getDate()}/${
-    habitCreated.getMonth() + 1
-  }/${habitCreated.getFullYear()}`;
+
+  const month = `${habitCreated.getMonth() + 1}`.padStart(2, "0");
+  const day = `${habitCreated.getDate()}`.padStart(2, "0");
+
+  const formatDate = `${habitCreated.getFullYear()}-${month}-${day}`;
 
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -79,7 +81,7 @@ export default function HabitPage({ route }) {
         );
       }
 
-      HabitService.createHabit({
+      HabitsService.createHabit({
         habitArea: habit?.habitArea,
         habitName: habitInput,
         habitFrequency: frequencyInput,
@@ -90,6 +92,7 @@ export default function HabitPage({ route }) {
         daysWithoutChecks: 0,
         habitIsChecked: 0,
         progressBar: 1,
+        habitChecks: 0,
       })
         .then(() => {
           navigation.navigate("Home", {
@@ -104,7 +107,7 @@ export default function HabitPage({ route }) {
     if (notificationToggle && !dayNotification && !timeNotification) {
       Alert.alert("Você precisa colocar a frequência e horário da notificação");
     } else {
-      HabitService.updateHabit({
+      HabitsService.updateHabit({
         habitArea: habit?.habitArea,
         habitName: habitInput,
         habitFrequency: frequencyInput,
@@ -115,6 +118,7 @@ export default function HabitPage({ route }) {
       }).then(() => {
         if (!notificationToggle) {
           NotificationService.deleteNotification(habit?.habitName);
+          console.log("notificação excluida");
         } else {
           NotificationService.deleteNotification(habit?.habitName);
           NotificationService.createNotification(
@@ -123,6 +127,7 @@ export default function HabitPage({ route }) {
             dayNotification,
             timeNotification
           );
+          console.log("notificação mudada");
         }
         navigation.navigate("Home", {
           updatedHabit: `Updated in ${habit?.habitArea}`,

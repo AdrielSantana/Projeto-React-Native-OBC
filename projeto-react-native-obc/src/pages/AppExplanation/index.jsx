@@ -9,17 +9,13 @@ const AppExplanation = () => {
   const navigation = useNavigation();
   const [showHome, setShowHome] = useState(false);
   const startDate = new Date();
-  const appStartData = `${startDate.getDate()}/${startDate.getMonth()}/${startDate.getFullYear()}`;
+  const month = `${startDate.getMonth() + 1}`.padStart(2, "0");
+  const day = `${startDate.getDate()}`.padStart(2, "0");
+  const appStartData = `${startDate.getFullYear()}-${month}-${day}`;
 
   const handleNavHome = () => {
     navigation.navigate("Home");
   };
-
-  useEffect(() => {
-    ChangeNavigationService.checkShowHome(1)
-      .then((showHome) => setShowHome(showHome.showHome))
-      .catch((err) => console.log(err));
-  }, []);
 
   function handleSetShowHome() {
     if (!showHome) {

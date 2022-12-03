@@ -40,7 +40,10 @@ export default function EditHabit({ habit, checkColor }) {
   }
 
   const checkData = new Date();
-  const formatDate = `${checkData.getDate()}/${checkData.getMonth()}/${checkData.getFullYear()}`;
+
+  const month = `${checkData.getMonth() + 1}`.padStart(2, "0");
+  const day = `${checkData.getDate()}`.padStart(2, "0");
+  const formatDate = `${checkData.getFullYear()}-${month}-${day}`;
 
   const textNotification =
     habit?.habitNotificationTime == null

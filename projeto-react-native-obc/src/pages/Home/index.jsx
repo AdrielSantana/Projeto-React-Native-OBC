@@ -6,10 +6,13 @@ import LifeStatus from "../../Components/Common/LifeStatus";
 import CreateHabit from "../../Components/Home/CreateHabit";
 import EditHabit from "../../Components/Home/EditHabit";
 import StatusBar from "../../Components/Home/StatusBar";
+import DefaultButton from "../../Components/Common/DefaultButton";
 
 import ChangeNavigationService from "../../Service/ChangeNavigationService";
-import HabitService from "../../Service/HabitService";
+import HabitsService from "../../Service/HabitsService";
 import CheckService from "../../Service/CheckService";
+
+import db from "../../Database";
 
 const Home = ({ route }) => {
   const [mindHabit, setMindHabit] = useState();
@@ -18,21 +21,24 @@ const Home = ({ route }) => {
   const [funHabit, setFunHabit] = useState();
 
   const [robotDaysLife, setRobotDaysLife] = useState();
+  const [checks, setChecks] = useState();
+  const [gameOver, setGameOver] = useState(false);
+
   const today = new Date();
 
   const excludeArea = route.params?.excludeArea;
 
   useEffect(() => {
-    HabitService.findByArea("Mente").then((mind) => {
+    HabitsService.findByArea("Mente").then((mind) => {
       setMindHabit(mind[0]);
     });
-    HabitService.findByArea("Financeiro").then((money) => {
+    HabitsService.findByArea("Financeiro").then((money) => {
       setMoneyHabit(money[0]);
     });
-    HabitService.findByArea("Corpo").then((body) => {
+    HabitsService.findByArea("Corpo").then((body) => {
       setBodyHabit(body[0]);
     });
-    HabitService.findByArea("Humor").then((fun) => {
+    HabitsService.findByArea("Humor").then((fun) => {
       setFunHabit(fun[0]);
     });
 
@@ -53,17 +59,40 @@ const Home = ({ route }) => {
 
     ChangeNavigationService.checkShowHome(1)
       .then((showHome) => {
-        const formDate = `${today.getDate()}/${today.getMonth()}/${today.getFullYear()}`;
+        const month = `${today.getMonth() + 1}`.padStart(2, "0");
+        const day = `${today.getDate()}`.padStart(2, "0");
+        const formDate = `${today.getFullYear()}-${month}-${day}`;
         const checkDays =
           new Date(formDate) - new Date(showHome.appStartData) + 1;
 
-        setRobotDaysLife(checkDays.toString().padStart(2, "0"));
+        if (checkDays === 0) {
+          setRobotDaysLife(checkDays.toString().padStart(2, "0"));
+        } else {
+          setRobotDaysLife(parseInt(checkDays / (1000 * 3600 * 24)));
+        }
       })
       .catch((err) => console.log(err));
   }, [route.params]);
 
   useEffect(() => {
     CheckService.removeCheck(mindHabit, moneyHabit, bodyHabit, funHabit);
+    CheckService.checkStatus(mindHabit, moneyHabit, bodyHabit, funHabit);
+
+    const mindChecks = mindHabit ? mindHabit?.habitChecks : 0;
+    const moneyChecks = moneyHabit ? moneyHabit?.habitChecks : 0;
+    const bodyChecks = bodyHabit ? bodyHabit?.habitChecks : 0;
+    const funChecks = funHabit ? funHabit?.habitChecks : 0;
+
+    setChecks(mindChecks + moneyChecks + bodyChecks + funChecks);
+
+    if (
+      mindHabit?.progressBar === 0 ||
+      moneyHabit?.progressBar === 0 ||
+      bodyHabit?.progressBar === 0 ||
+      funHabit?.progressBar === 0
+    ) {
+      setGameOver(true);
+    }
   }, [mindHabit, moneyHabit, bodyHabit, funHabit]);
 
   const navigation = useNavigation();
@@ -72,16 +101,56 @@ const Home = ({ route }) => {
     navigation.navigate("AppExplanation");
   };
 
+  function handleGameOver() {
+    navigation.navigate("Start");
+
+    db.transaction((tx) => {
+      tx.executeSql("DROP TABLE habits;");
+
+      tx.executeSql("DROP TABLE change_navigation;");
+
+      tx.executeSql(
+        "CREATE TABLE IF NOT EXISTS change_navigation (id INTEGER PRIMARY KEY AUTOINCREMENT, showHome BOOLEAN, appStartData TEXT);",
+        [],
+        (_, error) => {
+          console.log(
+            "Transaction ChangeNavigationService Error: " +
+              JSON.stringify(error)
+          );
+        }
+      );
+
+      tx.executeSql(
+        "CREATE TABLE IF NOT EXISTS habits (id INTEGER PRIMARY KEY AUTOINCREMENT, habitArea TEXT, habitName TEXT, habitFrequency TEXT, habitHasNotification BOOLEAN, habitNotificationFrequency TEXT, habitNotificationTime TEXT, lastCheck TEXT, daysWithoutChecks INTEGER, progressBar INTEGER, habitIsChecked BOOLEAN, habitChecks INTEGER);",
+        [],
+        (_, error) => {
+          console.log(
+            "Transaction HabitService Error: " + JSON.stringify(error)
+          );
+        }
+      );
+    });
+  }
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={{ alignItems: "center" }}>
-          <Text style={styles.dailyChecks}>
-            ❤️ {robotDaysLife} {robotDaysLife === "01" ? "dia" : "dias"} - ✅ 80
-            Checks
-          </Text>
+          {!gameOver ? (
+            <Text style={styles.dailyChecks}>
+              ❤️ {robotDaysLife} {robotDaysLife === "1" ? "dia" : "dias"} - ✅{" "}
+              {checks} {checks === 1 ? "Check" : "Checks"}
+            </Text>
+          ) : (
+            <Text style={styles.gameOverTitle}>Game Over</Text>
+          )}
 
-          <LifeStatus />
+          <LifeStatus
+            mindHabit={mindHabit}
+            moneyHabit={moneyHabit}
+            bodyHabit={bodyHabit}
+            funHabit={funHabit}
+          />
+
           <StatusBar
             mindHabit={mindHabit?.progressBar}
             moneyHabit={moneyHabit?.progressBar}
@@ -89,36 +158,49 @@ const Home = ({ route }) => {
             funHabit={funHabit?.progressBar}
           />
 
-          {mindHabit ? (
-            <EditHabit habit={mindHabit} checkColor="#90B7F3" />
+          {!gameOver ? (
+            <View>
+              {mindHabit ? (
+                <EditHabit habit={mindHabit} checkColor="#90B7F3" />
+              ) : (
+                <CreateHabit habitArea="Mente" borderColor="#90B7F3" />
+              )}
+              {moneyHabit ? (
+                <EditHabit habit={moneyHabit} checkColor="#85BB65" />
+              ) : (
+                <CreateHabit habitArea="Financeiro" borderColor="#85BB65" />
+              )}
+              {bodyHabit ? (
+                <EditHabit habit={bodyHabit} checkColor="#FF0044" />
+              ) : (
+                <CreateHabit habitArea="Corpo" borderColor="#FF0044" />
+              )}
+              {funHabit ? (
+                <EditHabit habit={funHabit} checkColor="#FE7F23" />
+              ) : (
+                <CreateHabit habitArea="Humor" borderColor="#FE7F23" />
+              )}
+
+              <Text
+                style={styles.explanationText}
+                onPress={() => {
+                  handleNavAppExplanation();
+                }}
+              >
+                Ver explicações novamente
+              </Text>
+            </View>
           ) : (
-            <CreateHabit habitArea="Mente" borderColor="#90B7F3" />
-          )}
-          {moneyHabit ? (
-            <EditHabit habit={moneyHabit} checkColor="#85BB65" />
-          ) : (
-            <CreateHabit habitArea="Financeiro" borderColor="#85BB65" />
-          )}
-          {bodyHabit ? (
-            <EditHabit habit={bodyHabit} checkColor="#FF0044" />
-          ) : (
-            <CreateHabit habitArea="Corpo" borderColor="#FF0044" />
-          )}
-          {funHabit ? (
-            <EditHabit habit={funHabit} checkColor="#FE7F23" />
-          ) : (
-            <CreateHabit habitArea="Humor" borderColor="#FE7F23" />
+            <View style={{ marginVertical: 40 }}>
+              <DefaultButton
+                buttonText={"Resetar o Game"}
+                handlePress={handleGameOver}
+                width={250}
+                height={50}
+              />
+            </View>
           )}
         </View>
-
-        <Text
-          style={styles.explanationText}
-          onPress={() => {
-            handleNavAppExplanation();
-          }}
-        >
-          Ver explicação novamente
-        </Text>
       </ScrollView>
     </View>
   );
@@ -142,6 +224,12 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     paddingTop: 15,
     fontWeight: "bold",
+  },
+  gameOverTitle: {
+    marginVertical: 25,
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
   },
 });
 
