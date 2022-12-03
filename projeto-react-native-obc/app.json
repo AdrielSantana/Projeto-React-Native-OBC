@@ -3,8 +3,15 @@
     "name": "OneBitLife",
     "slug": "onebitlife",
     "version": "1.0.0",
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "orientation": "portrait",
-    "icon": "./src/assets/icons/logo1.png"
+    "icon": "./src/assets/icons/logo1.png",
+    "extra": {
+      "eas": {
+        "projectId": "e545db77-c69f-4692-a943-b6d3757a6d77"
+      }
+    }
   }
 }
